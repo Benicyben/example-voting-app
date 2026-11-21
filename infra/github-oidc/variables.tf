@@ -5,7 +5,7 @@ variable "region" {
 
 variable "github_repo_sub" {
   type    = string
-  default = "repo:PRAISE-C24@104138599/example-voting-app@1420352531"
+  default = "repo:Benicyben@4138599/example-voting-app@20352531"
 }
 
 variable "state_bucket" { 

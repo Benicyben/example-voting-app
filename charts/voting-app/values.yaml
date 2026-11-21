@@ -1,5 +1,5 @@
 image:
-  registry: ghcr.io/praise-c24
+  registry: ghcr.io/benicyben
   tag: "7c1c55e3c584f545580d2799c0612648b8b1fab0"
   pullPolicy: IfNotPresent
 
