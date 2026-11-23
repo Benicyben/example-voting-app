@@ -14,6 +14,10 @@ ARG TARGETARCH
 ARG BUILDPLATFORM
 RUN echo "I am running on $BUILDPLATFORM, building for $TARGETPLATFORM"
 
+RUN apt-get update \
+ && apt-get upgrade -y \
+ && rm -rf /var/lib/apt/lists/*
+ 
 WORKDIR /source
 COPY *.csproj .
 RUN dotnet restore -a $TARGETARCH

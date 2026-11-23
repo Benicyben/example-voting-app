@@ -56,7 +56,7 @@ jobs:
 
       - name: Build
         run: |
-          docker build \
+          docker build --pull --no-cache \
             --label "org.opencontainers.image.source=https://github.com/${GITHUB_REPOSITORY}" \
             --label "org.opencontainers.image.revision=${GITHUB_SHA}" \
             -t "${IMAGE}:${GITHUB_SHA}" \
