@@ -3,11 +3,6 @@ provider "aws" {
 }
 
 
-# GitHub's identity provider in your AWS account (one per account)
-resource "aws_iam_openid_connect_provider" "github" {
-  url            = "https://token.actions.githubusercontent.com"
-  client_id_list = ["sts.amazonaws.com"]
-}
 
 # Plan role: PR runs, plus runs on main with no environment (the plan on merge, manual plan)
 data "aws_iam_policy_document" "plan_trust" {
@@ -15,14 +10,14 @@ data "aws_iam_policy_document" "plan_trust" {
     actions = ["sts:AssumeRoleWithWebIdentity"]
     principals {
       type        = "Federated"
-      identifiers = [aws_iam_openid_connect_provider.github.arn]
+      identifiers = [local.oidc_provider_arn]
     }
     condition {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:aud"
       values   = ["sts.amazonaws.com"]
     }
-    
+
     condition {
       test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
@@ -35,7 +30,7 @@ data "aws_iam_policy_document" "plan_trust" {
 }
 
 resource "aws_iam_role" "plan" {
-  name               = "gha-terraform-plan"
+  name               = "gha-voting-app-plan-second"
   assume_role_policy = data.aws_iam_policy_document.plan_trust.json
 }
 
@@ -45,7 +40,7 @@ data "aws_iam_policy_document" "apply_trust" {
     actions = ["sts:AssumeRoleWithWebIdentity"]
     principals {
       type        = "Federated"
-      identifiers = [aws_iam_openid_connect_provider.github.arn]
+      identifiers = [local.oidc_provider_arn]
     }
     condition {
       test     = "StringEquals"
@@ -61,7 +56,7 @@ data "aws_iam_policy_document" "apply_trust" {
 }
 
 resource "aws_iam_role" "apply" {
-  name               = "gha-terraform-apply"
+  name               = "gha-voting-app-apply-second"
   assume_role_policy = data.aws_iam_policy_document.apply_trust.json
 }
 
@@ -104,7 +99,7 @@ data "aws_iam_policy_document" "deploy_trust" {
     actions = ["sts:AssumeRoleWithWebIdentity"]
     principals {
       type        = "Federated"
-      identifiers = [aws_iam_openid_connect_provider.github.arn]
+      identifiers = [local.oidc_provider_arn]
     }
     condition {
       test     = "StringEquals"
@@ -120,7 +115,7 @@ data "aws_iam_policy_document" "deploy_trust" {
 }
 
 resource "aws_iam_role" "deploy" {
-  name               = "gha-app-deploy"
+  name               = "gha-voting-app-deploy-second"
   assume_role_policy = data.aws_iam_policy_document.deploy_trust.json
 }
 
@@ -136,4 +131,18 @@ resource "aws_iam_role_policy" "deploy" {
   name   = "describe-cluster"
   role   = aws_iam_role.deploy.id
   policy = data.aws_iam_policy_document.deploy_permissions.json
+}
+resource "aws_iam_openid_connect_provider" "github" {
+  count          = var.create_oidc_provider ? 1 : 0
+  url            = "https://token.actions.githubusercontent.com"
+  client_id_list = ["sts.amazonaws.com"]
+}
+
+data "aws_iam_openid_connect_provider" "github" {
+  count = var.create_oidc_provider ? 0 : 1
+  url   = "https://token.actions.githubusercontent.com"
+}
+
+locals {
+  oidc_provider_arn = var.create_oidc_provider ? aws_iam_openid_connect_provider.github[0].arn : data.aws_iam_openid_connect_provider.github[0].arn
 }
