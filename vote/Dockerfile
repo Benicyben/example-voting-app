@@ -5,10 +5,12 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
 # Add curl for healthcheck
-RUN apt-get update && apt-get upgrade -y \
+# Upgrade OS packages (fixes Trivy findings) and add curl for healthcheck
+RUN apt-get update && \
+    apt-get upgrade -y && \
     apt-get install -y --no-install-recommends curl && \
     rm -rf /var/lib/apt/lists/*
-
+    
 # Set the application directory
 WORKDIR /usr/local/app
 
