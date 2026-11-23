@@ -46,7 +46,7 @@ jobs:
     outputs:
       exists: ${{ steps.cluster.outputs.exists }}
     steps:
-      - uses: aws-actions/configure-aws-credentials@v4
+      - uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ vars.AWS_PLAN_ROLE_ARN }}   # read-only role, no approval needed
           aws-region: ${{ vars.AWS_REGION }}
@@ -74,7 +74,7 @@ jobs:
         with:
           ref: ${{ env.CHART_REF }}
 
-      - uses: aws-actions/configure-aws-credentials@v4
+      - uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
