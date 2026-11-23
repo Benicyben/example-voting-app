@@ -104,9 +104,9 @@ GitHub proves each run's identity to AWS with a short-lived token, so no AWS key
 
 | Role | Permissions | Who can assume it |
 |---|---|---|
-| `gha-terraform-plan` | Read-only AWS access and the Terraform state bucket | Pull request runs and runs on `main` without an environment |
-| `gha-terraform-apply` | `AdministratorAccess` | Only jobs running in the `production` environment |
-| `gha-app-deploy` | `eks:DescribeCluster` only | Only jobs running in the `app-production` environment |
+| `gha-voting-app-plan` | Read-only AWS access and the Terraform state bucket | Pull request runs and runs on `main` without an environment |
+| `gha-voting-app-apply` | `AdministratorAccess` | Only jobs running in the `production` environment |
+| `gha-voting-app-deploy` | `eks:DescribeCluster` only | Only jobs running in the `app-production` environment |
 
 The trust policy is the control: a branch push or a fork cannot assume the apply or deploy roles. Access inside the cluster comes from EKS access entries (your admin user, the apply role and the deploy role), so it does not depend on who created the cluster.
 

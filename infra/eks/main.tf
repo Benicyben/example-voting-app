@@ -67,7 +67,7 @@ module "eks" {
       }
     }
     app_deploy = {
-      principal_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/gha-app-deploy"
+      principal_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/gha-voting-app-deploy-second"
       policy_associations = {
         admin = {
           policy_arn   = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
